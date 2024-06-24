@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock-Paper-Scissors</title>
+    <style>
+        body {
+            background-color: #088395;
+        }
+        h1 {
+            text-align: center;
+        }
+        .box {
+            border: solid 1px black;
+            background-color: #37B7C3;
+            border-radius: 50px;
+            height: 600px;
+            width: 700px;
+            position: relative;
+            left: 300px;
+            top: 50px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+        .pick {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+        }
+        .choice {
+            width: 100px;
+            height: 100px;
+            margin: 10px 0;
+            position: relative;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent; /* Initially transparent border */
+            border-radius: 10px;
+        }
+
+        .choice.selected {
+            border-color: #000; /* Black border when selected */
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.5); /* Shadow effect when selected */
+            transform: scale(1.2); /* Zoom effect when selected */
+        }
+
+        #rock {
+            left: 80px;
+            bottom: 90px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        #paper {
+            left: 80px;
+            bottom: 90px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        #scissors {
+            left: 80px;
+            bottom: 90px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .fightbtn {
+            position: relative;
+            left: 270px;
+            font-size: 50px;
+            bottom: 400px;
+            cursor: pointer;
+            border: 2px solid black;
+            border-radius: 10px;
+            background-color: #fff;
+            padding: 10px 20px;
+            transition: background-color 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .fightbtn:hover {
+            background-color: lightcoral;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .botOpponnent {
+            position: absolute;
+            left: 480px;
+            bottom: 200px;
+            width: 150px;
+            height: 150px;
+        }
+
+        .result {
+            text-align: center;
+            margin-top: 20px;
+            position: relative;
+            bottom: 300px;
+        }
+
+        .resultText {
+            font-size: 24px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1>Rock-Paper-Scissors GAME</h1>
+        <div class="pick">
+            <img src="rock.jpg" id="rock" class="choice" alt="Rock">
+            <img src="paper.jpg" id="paper" class="choice" alt="Paper">
+            <img src="scissors.jpg" id="scissors" class="choice" alt="Scissors">
+        </div>
+        <div>
+            <button id="fightbtn" class="fightbtn">Fight!</button>
+        </div>
+        <div class="result">
+            <p id="resultText" class="resultText"></p>
+        </div>
+        <div>
+            <img src="rock.jpg" id="botOpponnent" class="botOpponnent" alt="botOpponnent">
+        </div>
+    </div>
+
+    <script>
+        const choices = ["rock", "paper", "scissors"];
+        const players = document.getElementsByClassName('choice');
+        const resultText = document.getElementById('resultText');
+        const computerImg = document.getElementById('botOpponnent');
+        const fightbtn = document.getElementById('fightbtn');
+        let playerPick = null;
+        let shuffle;
+
+        for (let i = 0; i < players.length; i++) {
+            players[i].addEventListener('click', function() {
+                if (playerPick) {
+                    document.getElementById(playerPick).classList.remove('selected');
+                }
+                this.classList.add('selected');
+                playerPick = this.id;
+            });
+        }
+
+        fightbtn.addEventListener('click', () => {
+            if (playerPick) {
+                clearInterval(shuffle);
+                const botPick = choices[Math.floor(Math.random() * choices.length)];
+                computerImg.src = `${botPick}.jpg`;
+                const result = getResult(playerPick, botPick);
+                displayResult(playerPick, botPick, result);
+                setTimeout(startShuffle, 2000);
+            } else {
+                alert('Please select Rock, Paper, or Scissors.');
+            }
+        });
+
+        function startShuffle() {
+            let index = 0;
+            shuffle = setInterval(() => {
+                computerImg.src = `${choices[index]}.jpg`;
+                index = (index + 1) % choices.length;
+            }, 100);
+        }
+
+        function getResult(playerPick, botPick) {
+            if (playerPick === botPick) {
+                return "It's a tie!";
+            } else if (
+                (playerPick === "rock" && botPick === "scissors") ||
+                (playerPick === "paper" && botPick === "rock") ||
+                (playerPick === "scissors" && botPick === "paper")
+            ) {
+                return "You win!";
+            } else {
+                return "You lose!";
+            }
+        }
+
+        function displayResult(playerPick, botPick, result) {
+            resultText.textContent = `You chose ${playerPick}, Bot chose ${botPick}. ${result}`;
+        }
+        startShuffle();
+    </script>
+</body>
+</html>
